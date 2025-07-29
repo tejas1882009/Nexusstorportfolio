@@ -3,203 +3,118 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nexus Admin Panel</title>
+  <title>Nexus Store Admin Panel</title>
   <style>
-    * {
-      margin: 0; padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
     body {
-      background: linear-gradient(to right, #141e30, #243b55);
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f0f;
+      color: #ffffff;
+      margin: 0;
+      padding: 2rem;
     }
 
-    .admin-container {
-      background: rgba(255, 255, 255, 0.06);
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
-      width: 100%;
-      max-width: 460px;
-    }
-
-    h2 {
+    h1 {
       text-align: center;
-      margin-bottom: 25px;
-      font-weight: 600;
-      color: #ffd700;
+      color: #00f5a0;
     }
 
-    .form-group {
-      position: relative;
-      margin-bottom: 18px;
+    .form-container {
+      max-width: 500px;
+      margin: auto;
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,255,170,0.1);
+    }
+
+    input, button, select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
     }
 
     input {
-      width: 100%;
-      padding: 13px 12px;
-      border-radius: 8px;
-      border: none;
-      background: #eee;
-      font-size: 16px;
-      color: #333;
+      background-color: #2a2a2a;
+      color: #fff;
     }
 
-    input:focus {
-      outline: 2px solid #ffd700;
+    button {
+      background-color: #00f5a0;
+      color: #000;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #00c77b;
+    }
+
+    .eye-toggle {
+      position: relative;
     }
 
     .eye-icon {
       position: absolute;
-      top: 50%;
-      right: 12px;
-      transform: translateY(-50%);
+      right: 16px;
+      top: 36px;
       cursor: pointer;
-      color: #666;
+      color: #ccc;
     }
 
-    .preview {
-      display: none;
-      width: 100%;
-      max-height: 180px;
-      object-fit: contain;
+    .message {
       margin-top: 10px;
-      border-radius: 10px;
-      background: #fff;
-      padding: 10px;
-    }
-
-    button {
-      width: 100%;
-      padding: 13px;
-      background: #ffd700;
-      color: #000;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      background: #e6c200;
-    }
-
-    .status {
-      margin-top: 12px;
       text-align: center;
       font-weight: bold;
-    }
-
-    @media (max-width: 500px) {
-      .admin-container {
-        margin: 20px;
-        padding: 20px;
-      }
     }
   </style>
 </head>
 <body>
+  <h1>Admin Panel – Nexus Store</h1>
+  <div class="form-container">
+    <form id="uploadForm">
+      <input type="text" name="name" placeholder="Product Name" required />
+      <input type="text" name="price" placeholder="Price (e.g. ₹99)" required />
+      <input type="text" name="image" placeholder="Image URL" required />
+      <input type="text" name="link" placeholder="Affiliate Link / Store Link" required />
+      <input type="text" name="badge" placeholder="Badge (optional, e.g. Top Pick)" />
 
-<div class="admin-container">
-  <h2>🛠 Nexus Admin Panel</h2>
+      <div class="eye-toggle">
+        <input type="password" name="pass" id="pass" placeholder="Admin Password" required />
+        <span class="eye-icon" onclick="togglePassword()">👁️</span>
+      </div>
 
-  <div class="form-group">
-    <input type="password" id="password" placeholder="Enter Password" />
-    <span class="eye-icon" onclick="togglePassword()">👁️</span>
+      <button type="submit">Upload Product</button>
+    </form>
+    <div class="message" id="message"></div>
   </div>
 
-  <div class="form-group">
-    <input type="text" id="image" placeholder="Image URL" oninput="previewImage(this.value)" />
-    <img id="preview" class="preview" />
-  </div>
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbziaW3qq5fsOOV1jb1EKstDr60nO5tXvfL1DleCnPfNTB27l8HFsnqLtMI4rrpvMpwp/exec";
 
-  <div class="form-group">
-    <input type="text" id="title" placeholder="Design Title" />
-  </div>
+    document.getElementById("uploadForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const form = new FormData(this);
 
-  <div class="form-group">
-    <input type="text" id="price" placeholder="Price (₹)" />
-  </div>
-
-  <button onclick="uploadData()">Upload</button>
-  <div class="status" id="status"></div>
-</div>
-
-<script>
-  function togglePassword() {
-    const pwd = document.getElementById('password');
-    pwd.type = pwd.type === 'password' ? 'text' : 'password';
-  }
-
-  function previewImage(url) {
-    const img = document.getElementById('preview');
-    if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
-      img.src = url;
-      img.style.display = "block";
-    } else {
-      img.style.display = "none";
-    }
-  }
-
-  async function uploadData() {
-    const pass = document.getElementById('password').value.trim();
-    const image = document.getElementById('image').value.trim();
-    const title = document.getElementById('title').value.trim();
-    const price = document.getElementById('price').value.trim();
-    const status = document.getElementById('status');
-
-    if (pass !== "nexusstore.20") {
-      status.style.color = "red";
-      status.innerText = "❌ Incorrect password!";
-      return;
-    }
-
-    if (!image || !title || !price) {
-      status.style.color = "orange";
-      status.innerText = "⚠️ Please fill all fields!";
-      return;
-    }
-
-    status.style.color = "#fff";
-    status.innerText = "Uploading...";
-
-    try {
-      const res = await fetch("https://script.google.com/macros/s/AKfycbziaW3qq5fsOOV1jb1EKstDr60nO5tXvfL1DleCnPfNTB27l8HFsnqLtMI4rrpvMpwp/exec", {
+      fetch(scriptURL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ image, title, price })
-      });
+        body: form
+      })
+        .then((res) => res.text())
+        .then((response) => {
+          document.getElementById("message").textContent = response.includes("Success") ? "✅ Product uploaded!" : "❌ Upload failed: " + response;
+        })
+        .catch((err) => {
+          document.getElementById("message").textContent = "⚠️ Error: " + err;
+        });
+    });
 
-      const result = await res.text();
-      if (result.toLowerCase().includes("success")) {
-        status.style.color = "lime";
-        status.innerText = "✅ Upload successful!";
-        document.getElementById('image').value = "";
-        document.getElementById('title').value = "";
-        document.getElementById('price').value = "";
-        document.getElementById('preview').style.display = "none";
-      } else {
-        status.style.color = "red";
-        status.innerText = "❌ Upload failed!";
-      }
-    } catch (err) {
-      console.error(err);
-      status.style.color = "red";
-      status.innerText = "❌ Upload failed!";
+    function togglePassword() {
+      const input = document.getElementById("pass");
+      input.type = input.type === "password" ? "text" : "password";
     }
-  }
-</script>
-
+  </script>
 </body>
 </html>
