@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NexusStore Portfolio</title>
   <style>
     body { margin:0; font-family:sans-serif; background:#121212; color:#fff; }
@@ -20,14 +21,14 @@
 
 <header>
   <h1>Please kindly DM us on Instagram to buy</h1>
-  <p>Follow our Instagram: <a href="https://instagram.com/nexusstore.mt" target="_blank" style="color:#00ffd5;">@nexusstore.mt</a></p>
+  <p>Follow us: <a href="https://instagram.com/nexusstore.mt" target="_blank" style="color:#00ffd5;">@nexusstore.mt</a></p>
 </header>
 
 <div id="gallery"></div>
 
 <script>
   async function loadGallery() {
-    const res = await fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec');
+    const res = await fetch("https://script.google.com/macros/s/AKfycbzx2bOmlPEAfkB_0fE5FvCbilYl41ebuh6gghyUy8uvtW8Ba8KokXyQSi_R56mU-Lia/exec");
     const items = await res.json();
     const gallery = document.getElementById('gallery');
     items.forEach(it => {
