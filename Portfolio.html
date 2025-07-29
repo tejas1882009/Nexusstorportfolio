@@ -2,51 +2,178 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NexusStore Portfolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nexus Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet"/>
   <style>
-    body { margin:0; font-family:sans-serif; background:#121212; color:#fff; }
-    header { background:#1f1f1f; text-align:center; padding:20px; }
-    header h1 { margin:0; color:#00ffd5; font-size:1.75rem; }
-    header p { margin:5px 0 0; font-size:1rem; color:#bbb; }
-    #gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:10px; padding:10px; }
-    .card { background:#2a2a2a; border-radius:5px; overflow:hidden; text-align:center; }
-    .card img { width:100%; height:auto; display:block; }
-    .card .info { padding:8px; }
-    .card .info h3 { margin:5px 0; font-size:1.1rem; }
-    .card .info span { color:#00ff7f; font-size:1rem; }
+    /* Base Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #0f0f0f;
+      font-family: 'Outfit', sans-serif;
+      color: #f5f5f5;
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: #00ffc8;
+      background: #1e1e1e;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 255, 200, 0.1);
+    }
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      background: #1b1b1b;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(0, 255, 200, 0.15);
+    }
+
+    .card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover img {
+      transform: scale(1.05);
+    }
+
+    .card-content {
+      padding: 1rem;
+    }
+
+    .title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .price {
+      color: #00ffc8;
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .buy-btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: linear-gradient(135deg, #00ffc8, #1ed2ff);
+      color: #0f0f0f;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      text-decoration: none;
+    }
+
+    .buy-btn:hover {
+      background: linear-gradient(135deg, #1ed2ff, #00ffc8);
+    }
+
+    @media (max-width: 600px) {
+      .card img {
+        height: 180px;
+      }
+
+      header {
+        font-size: 1rem;
+      }
+
+      .title {
+        font-size: 1rem;
+      }
+    }
+
+    /* Decorative particles */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://www.transparenttextures.com/patterns/stardust.png');
+      opacity: 0.03;
+      z-index: -1;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #1b1b1b;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #00ffc8;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
+  <header>
+    Please click on your file and contact us on our Instagram page to buy
+  </header>
 
-<header>
-  <h1>Please kindly DM us on Instagram to buy</h1>
-  <p>Follow us: <a href="https://instagram.com/nexusstore.mt" target="_blank" style="color:#00ffd5;">@nexusstore.mt</a></p>
-</header>
+  <div class="portfolio-grid" id="portfolioContainer">
+    <!-- Portfolio cards will be injected here -->
+  </div>
 
-<div id="gallery"></div>
+  <script>
+    const container = document.getElementById('portfolioContainer');
+    const apiUrl = "https://script.google.com/macros/s/AKfycbzx2bOmlPEAfkB_0fE5FvCbilYl41ebuh6gghyUy8uvtW8Ba8KokXyQSi_R56mU-Lia/exec";
+    const instagramURL = "https://www.instagram.com/nexusstore.mt?igsh=Z2Nwa2d4bHdqaGIy";
 
-<script>
-  async function loadGallery() {
-    const res = await fetch("https://script.google.com/macros/s/AKfycbzx2bOmlPEAfkB_0fE5FvCbilYl41ebuh6gghyUy8uvtW8Ba8KokXyQSi_R56mU-Lia/exec");
-    const items = await res.json();
-    const gallery = document.getElementById('gallery');
-    items.forEach(it => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <a href="https://instagram.com/nexusstore.mt" target="_blank">
-          <img src="${it.img}" alt="${it.title}">
-        </a>
-        <div class="info">
-          <h3>${it.title}</h3>
-          <span>${it.price}</span>
-        </div>`;
-      gallery.appendChild(card);
-    });
-  }
-  loadGallery();
-</script>
-
+    fetch(apiUrl)
+      .then(res => res.json())
+      .then(data => {
+        container.innerHTML = "";
+        data.reverse().forEach(item => {
+          const card = document.createElement('div');
+          card.className = "card";
+          card.innerHTML = `
+            <img src="${item.img}" alt="${item.title}">
+            <div class="card-content">
+              <div class="title">${item.title}</div>
+              <div class="price">₹${item.price}</div>
+              <a class="buy-btn" href="${instagramURL}" target="_blank">Buy on Instagram</a>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      })
+      .catch(err => {
+        container.innerHTML = `<p style="color:red;text-align:center;">Failed to load portfolio items.</p>`;
+        console.error(err);
+      });
+  </script>
 </body>
 </html>
