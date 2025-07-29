@@ -1,55 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Upload — NexusStore</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - Nexus Store</title>
   <style>
-    body { font-family: sans-serif; background: #f4f4f4; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; }
-    .container { background: #fff; padding: 20px 30px; border-radius: 8px; width: 100%; max-width: 400px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);}
-    input, button { width:100%; padding:10px; margin:5px 0; font-size: 1rem; }
-    h2 { margin-top:0; }
+    * {
+      margin: 0; padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to right, #141e30, #243b55);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .admin-container {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      width: 100%;
+      max-width: 450px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #ffd700;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      background: #eee;
+      color: #333;
+    }
+
+    .password-field {
+      position: relative;
+    }
+
+    .eye-icon {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    button {
+      background: #ffd700;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #e6c200;
+    }
+
+    .status {
+      margin-top: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    @media screen and (max-width: 480px) {
+      .admin-container {
+        padding: 20px;
+        margin: 20px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Admin Panel</h2>
-    <input id="pwd" type="password" placeholder="Enter password">
-    <input id="title" type="text" placeholder="Design title">
-    <input id="price" type="text" placeholder="Price (e.g. ₹500)">
-    <input id="file" type="file" accept="image/*">
-    <button id="uploadBtn">Upload & Publish</button>
-    <p id="msg"></p>
+
+<div class="admin-container">
+  <h2>Nexus Admin Panel</h2>
+  <div class="password-field">
+    <input type="password" id="password" placeholder="Enter Password" />
+    <span class="eye-icon" onclick="togglePassword()">👁️</span>
   </div>
 
-  <script>
-    const PASSWORD = "nexusstore.20";
-    document.getElementById('uploadBtn').onclick = async()=>{
-      const pwd = document.getElementById('pwd').value;
-      const title = document.getElementById('title').value || '';
-      const price = document.getElementById('price').value || '';
-      const fileIn = document.getElementById('file');
-      const msg = document.getElementById('msg');
-      if(pwd !== PASSWORD){ msg.textContent = 'Wrong password'; msg.style.color='red'; return; }
-      if(!fileIn.files.length){ msg.textContent = 'Select an image file'; msg.style.color='red'; return; }
-      const file = fileIn.files[0];
-      const reader = new FileReader();
-      reader.onload = async e=>{
-        const base64 = e.target.result;
-        const payload = { title, price, img: base64 };
-        msg.textContent = 'Uploading…'; msg.style.color='black';
-        try {
-          await fetch("https://script.google.com/macros/s/AKfycbzx2bOmlPEAfkB_0fE5FvCbilYl41ebuh6gghyUy8uvtW8Ba8KokXyQSi_R56mU-Lia/exec", {
-            method: 'POST',
-            body: JSON.stringify(payload),
-            headers: {'Content-Type': 'application/json'},
-          });
-          msg.textContent = 'Uploaded successfully!'; msg.style.color='green';
-        } catch(err){
-          msg.textContent = 'Upload failed'; msg.style.color='red';
+  <input type="text" id="image" placeholder="Image URL" />
+  <input type="text" id="title" placeholder="Design Title" />
+  <input type="text" id="price" placeholder="Price (₹)" />
+  <button onclick="uploadData()">Upload</button>
+
+  <div class="status" id="status"></div>
+</div>
+
+<script>
+  function togglePassword() {
+    const pwd = document.getElementById('password');
+    pwd.type = pwd.type === 'password' ? 'text' : 'password';
+  }
+
+  async function uploadData() {
+    const pass = document.getElementById('password').value;
+    const image = document.getElementById('image').value;
+    const title = document.getElementById('title').value;
+    const price = document.getElementById('price').value;
+    const status = document.getElementById('status');
+
+    if (pass !== "nexusstore.20") {
+      status.style.color = "red";
+      status.innerText = "❌ Incorrect password!";
+      return;
+    }
+
+    if (!image || !title || !price) {
+      status.style.color = "orange";
+      status.innerText = "⚠️ Please fill all fields!";
+      return;
+    }
+
+    status.innerText = "Uploading...";
+
+    try {
+      const res = await fetch("https://script.google.com/macros/s/AKfycbzx2bOmlPEAfkB_0fE5FvCbilYl41ebuh6gghyUy8uvtW8Ba8KokXyQSi_R56mU-Lia/exec", {
+        method: "POST",
+        body: JSON.stringify({ image, title, price }),
+        headers: {
+          "Content-Type": "application/json"
         }
-      };
-      reader.readAsDataURL(file);
-    };
-  </script>
+      });
+
+      const result = await res.text();
+      if (result.toLowerCase().includes("success")) {
+        status.style.color = "lime";
+        status.innerText = "✅ Upload successful!";
+      } else {
+        status.style.color = "red";
+        status.innerText = "❌ Upload failed!";
+      }
+    } catch (err) {
+      console.error(err);
+      status.style.color = "red";
+      status.innerText = "❌ Upload failed!";
+    }
+  }
+</script>
+
 </body>
 </html>
