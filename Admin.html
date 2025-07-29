@@ -38,7 +38,7 @@
         const payload = { title, price, img: base64 };
         msg.textContent = 'Uploading…'; msg.style.color='black';
         try {
-          await fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec', {
+          await fetch("https://script.google.com/macros/s/AKfycbzx2bOmlPEAfkB_0fE5FvCbilYl41ebuh6gghyUy8uvtW8Ba8KokXyQSi_R56mU-Lia/exec", {
             method: 'POST',
             body: JSON.stringify(payload),
             headers: {'Content-Type': 'application/json'},
