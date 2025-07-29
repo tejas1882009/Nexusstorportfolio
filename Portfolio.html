@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexusStore Portfolio</title>
+  <style>
+    body { margin:0; font-family:sans-serif; background:#121212; color:#fff; }
+    header { background:#1f1f1f; text-align:center; padding:20px; }
+    header h1 { margin:0; color:#00ffd5; font-size:1.75rem; }
+    header p { margin:5px 0 0; font-size:1rem; color:#bbb; }
+    #gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:10px; padding:10px; }
+    .card { background:#2a2a2a; border-radius:5px; overflow:hidden; text-align:center; }
+    .card img { width:100%; height:auto; display:block; }
+    .card .info { padding:8px; }
+    .card .info h3 { margin:5px 0; font-size:1.1rem; }
+    .card .info span { color:#00ff7f; font-size:1rem; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Please kindly DM us on Instagram to buy</h1>
+  <p>Follow our Instagram: <a href="https://instagram.com/nexusstore.mt" target="_blank" style="color:#00ffd5;">@nexusstore.mt</a></p>
+</header>
+
+<div id="gallery"></div>
+
+<script>
+  async function loadGallery() {
+    const res = await fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec');
+    const items = await res.json();
+    const gallery = document.getElementById('gallery');
+    items.forEach(it => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <a href="https://instagram.com/nexusstore.mt" target="_blank">
+          <img src="${it.img}" alt="${it.title}">
+        </a>
+        <div class="info">
+          <h3>${it.title}</h3>
+          <span>${it.price}</span>
+        </div>`;
+      gallery.appendChild(card);
+    });
+  }
+  loadGallery();
+</script>
+
+</body>
+</html>

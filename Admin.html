@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Upload — NexusStore</title>
+  <style>
+    body { font-family: sans-serif; background: #f4f4f4; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; }
+    .container { background: #fff; padding: 20px 30px; border-radius: 8px; width: 100%; max-width: 400px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);}
+    input, button { width:100%; padding:10px; margin:5px 0; font-size: 1rem; }
+    h2 { margin-top:0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Admin Panel</h2>
+    <input id="pwd" type="password" placeholder="Enter password">
+    <input id="title" type="text" placeholder="Design title">
+    <input id="price" type="text" placeholder="Price (e.g. ₹500)">
+    <input id="file" type="file" accept="image/*">
+    <button id="uploadBtn">Upload & Publish</button>
+    <p id="msg"></p>
+  </div>
+
+  <script>
+    const PASSWORD = "nexusstore.20";
+    document.getElementById('uploadBtn').onclick = async()=>{
+      const pwd = document.getElementById('pwd').value;
+      const title = document.getElementById('title').value || '';
+      const price = document.getElementById('price').value || '';
+      const fileIn = document.getElementById('file');
+      const msg = document.getElementById('msg');
+      if(pwd !== PASSWORD){ msg.textContent = 'Wrong password'; msg.style.color='red'; return; }
+      if(!fileIn.files.length){ msg.textContent = 'Select an image file'; msg.style.color='red'; return; }
+      const file = fileIn.files[0];
+      const reader = new FileReader();
+      reader.onload = async e=>{
+        const base64 = e.target.result;
+        const payload = { title, price, img: base64 };
+        msg.textContent = 'Uploading…'; msg.style.color='black';
+        try {
+          await fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec', {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: {'Content-Type': 'application/json'},
+          });
+          msg.textContent = 'Uploaded successfully!'; msg.style.color='green';
+        } catch(err){
+          msg.textContent = 'Upload failed'; msg.style.color='red';
+        }
+      };
+      reader.readAsDataURL(file);
+    };
+  </script>
+</body>
+</html>
